@@ -21,7 +21,7 @@
 		C3BFD56D199ABCE600E7A725 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3BFD56B199ABCE600E7A725 /* InfoPlist.strings */; };
 		C3BFD56F199ABCE600E7A725 /* CardsCodingChallengeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD56E199ABCE600E7A725 /* CardsCodingChallengeTests.m */; };
 		C3BFD57D199AC01A00E7A725 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD57C199AC01A00E7A725 /* AppDelegate.m */; };
-		C3BFD580199AC02400E7A725 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD57F199AC02400E7A725 /* ViewController.m */; };
+		C3BFD580199AC02400E7A725 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD57F199AC02400E7A725 /* RootViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,8 +53,8 @@
 		C3BFD56E199ABCE600E7A725 /* CardsCodingChallengeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CardsCodingChallengeTests.m; sourceTree = "<group>"; };
 		C3BFD57B199AC01A00E7A725 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = "App Delegate/AppDelegate.h"; sourceTree = "<group>"; };
 		C3BFD57C199AC01A00E7A725 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = "App Delegate/AppDelegate.m"; sourceTree = "<group>"; };
-		C3BFD57E199AC02400E7A725 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = "View Controllers/ViewController.h"; sourceTree = "<group>"; };
-		C3BFD57F199AC02400E7A725 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewController.m; path = "View Controllers/ViewController.m"; sourceTree = "<group>"; };
+		C3BFD57E199AC02400E7A725 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RootViewController.h; path = "View Controllers/RootViewController.h"; sourceTree = "<group>"; };
+		C3BFD57F199AC02400E7A725 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RootViewController.m; path = "View Controllers/RootViewController.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,8 +164,8 @@
 		C3BFD579199ABFC100E7A725 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				C3BFD57E199AC02400E7A725 /* ViewController.h */,
-				C3BFD57F199AC02400E7A725 /* ViewController.m */,
+				C3BFD57E199AC02400E7A725 /* RootViewController.h */,
+				C3BFD57F199AC02400E7A725 /* RootViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -277,7 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3BFD580199AC02400E7A725 /* ViewController.m in Sources */,
+				C3BFD580199AC02400E7A725 /* RootViewController.m in Sources */,
 				C3BFD57D199AC01A00E7A725 /* AppDelegate.m in Sources */,
 				C3BFD54D199ABCE600E7A725 /* main.m in Sources */,
 			);
