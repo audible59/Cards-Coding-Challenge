@@ -12,16 +12,16 @@
 		C3BFD545199ABCE600E7A725 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3BFD544199ABCE600E7A725 /* UIKit.framework */; };
 		C3BFD54B199ABCE600E7A725 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3BFD549199ABCE600E7A725 /* InfoPlist.strings */; };
 		C3BFD54D199ABCE600E7A725 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD54C199ABCE600E7A725 /* main.m */; };
-		C3BFD551199ABCE600E7A725 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD550199ABCE600E7A725 /* AppDelegate.m */; };
 		C3BFD554199ABCE600E7A725 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3BFD552199ABCE600E7A725 /* Main_iPhone.storyboard */; };
 		C3BFD557199ABCE600E7A725 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3BFD555199ABCE600E7A725 /* Main_iPad.storyboard */; };
-		C3BFD55A199ABCE600E7A725 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD559199ABCE600E7A725 /* ViewController.m */; };
 		C3BFD55C199ABCE600E7A725 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3BFD55B199ABCE600E7A725 /* Images.xcassets */; };
 		C3BFD563199ABCE600E7A725 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3BFD562199ABCE600E7A725 /* XCTest.framework */; };
 		C3BFD564199ABCE600E7A725 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3BFD540199ABCE600E7A725 /* Foundation.framework */; };
 		C3BFD565199ABCE600E7A725 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3BFD544199ABCE600E7A725 /* UIKit.framework */; };
 		C3BFD56D199ABCE600E7A725 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3BFD56B199ABCE600E7A725 /* InfoPlist.strings */; };
 		C3BFD56F199ABCE600E7A725 /* CardsCodingChallengeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD56E199ABCE600E7A725 /* CardsCodingChallengeTests.m */; };
+		C3BFD57D199AC01A00E7A725 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD57C199AC01A00E7A725 /* AppDelegate.m */; };
+		C3BFD580199AC02400E7A725 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BFD57F199AC02400E7A725 /* ViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,18 +43,18 @@
 		C3BFD54A199ABCE600E7A725 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C3BFD54C199ABCE600E7A725 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C3BFD54E199ABCE600E7A725 /* CardsCodingChallenge-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CardsCodingChallenge-Prefix.pch"; sourceTree = "<group>"; };
-		C3BFD54F199ABCE600E7A725 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		C3BFD550199ABCE600E7A725 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C3BFD553199ABCE600E7A725 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
 		C3BFD556199ABCE600E7A725 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		C3BFD558199ABCE600E7A725 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		C3BFD559199ABCE600E7A725 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		C3BFD55B199ABCE600E7A725 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C3BFD561199ABCE600E7A725 /* CardsCodingChallengeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardsCodingChallengeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3BFD562199ABCE600E7A725 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		C3BFD56A199ABCE600E7A725 /* CardsCodingChallengeTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CardsCodingChallengeTests-Info.plist"; sourceTree = "<group>"; };
 		C3BFD56C199ABCE600E7A725 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C3BFD56E199ABCE600E7A725 /* CardsCodingChallengeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CardsCodingChallengeTests.m; sourceTree = "<group>"; };
+		C3BFD57B199AC01A00E7A725 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = "App Delegate/AppDelegate.h"; sourceTree = "<group>"; };
+		C3BFD57C199AC01A00E7A725 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = "App Delegate/AppDelegate.m"; sourceTree = "<group>"; };
+		C3BFD57E199AC02400E7A725 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = "View Controllers/ViewController.h"; sourceTree = "<group>"; };
+		C3BFD57F199AC02400E7A725 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewController.m; path = "View Controllers/ViewController.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,12 +114,9 @@
 		C3BFD546199ABCE600E7A725 /* CardsCodingChallenge */ = {
 			isa = PBXGroup;
 			children = (
-				C3BFD54F199ABCE600E7A725 /* AppDelegate.h */,
-				C3BFD550199ABCE600E7A725 /* AppDelegate.m */,
-				C3BFD552199ABCE600E7A725 /* Main_iPhone.storyboard */,
-				C3BFD555199ABCE600E7A725 /* Main_iPad.storyboard */,
-				C3BFD558199ABCE600E7A725 /* ViewController.h */,
-				C3BFD559199ABCE600E7A725 /* ViewController.m */,
+				C3BFD57A199ABFCF00E7A725 /* App Delegate */,
+				C3BFD579199ABFC100E7A725 /* View Controllers */,
+				C3BFD578199ABFB000E7A725 /* Storyboards */,
 				C3BFD55B199ABCE600E7A725 /* Images.xcassets */,
 				C3BFD547199ABCE600E7A725 /* Supporting Files */,
 			);
@@ -153,6 +150,33 @@
 				C3BFD56B199ABCE600E7A725 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C3BFD578199ABFB000E7A725 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				C3BFD552199ABCE600E7A725 /* Main_iPhone.storyboard */,
+				C3BFD555199ABCE600E7A725 /* Main_iPad.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
+		C3BFD579199ABFC100E7A725 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				C3BFD57E199AC02400E7A725 /* ViewController.h */,
+				C3BFD57F199AC02400E7A725 /* ViewController.m */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		C3BFD57A199ABFCF00E7A725 /* App Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				C3BFD57B199AC01A00E7A725 /* AppDelegate.h */,
+				C3BFD57C199AC01A00E7A725 /* AppDelegate.m */,
+			);
+			name = "App Delegate";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,8 +277,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3BFD55A199ABCE600E7A725 /* ViewController.m in Sources */,
-				C3BFD551199ABCE600E7A725 /* AppDelegate.m in Sources */,
+				C3BFD580199AC02400E7A725 /* ViewController.m in Sources */,
+				C3BFD57D199AC01A00E7A725 /* AppDelegate.m in Sources */,
 				C3BFD54D199ABCE600E7A725 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
