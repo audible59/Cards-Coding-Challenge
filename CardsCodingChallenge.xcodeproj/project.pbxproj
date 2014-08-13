@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C31E0917199B284500EEC89B /* ScrollViewContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = C31E0916199B284500EEC89B /* ScrollViewContainer.m */; };
 		C3BFD541199ABCE600E7A725 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3BFD540199ABCE600E7A725 /* Foundation.framework */; };
 		C3BFD543199ABCE600E7A725 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3BFD542199ABCE600E7A725 /* CoreGraphics.framework */; };
 		C3BFD545199ABCE600E7A725 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3BFD544199ABCE600E7A725 /* UIKit.framework */; };
@@ -36,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C31E0915199B284500EEC89B /* ScrollViewContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScrollViewContainer.h; path = Views/ScrollViewContainer.h; sourceTree = "<group>"; };
+		C31E0916199B284500EEC89B /* ScrollViewContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScrollViewContainer.m; path = Views/ScrollViewContainer.m; sourceTree = "<group>"; };
 		C3BFD53D199ABCE600E7A725 /* CardsCodingChallenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardsCodingChallenge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3BFD540199ABCE600E7A725 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C3BFD542199ABCE600E7A725 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -83,6 +86,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C31E0914199B281900EEC89B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C31E0915199B284500EEC89B /* ScrollViewContainer.h */,
+				C31E0916199B284500EEC89B /* ScrollViewContainer.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		C3BFD534199ABCE600E7A725 = {
 			isa = PBXGroup;
 			children = (
@@ -117,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				C3BFD57A199ABFCF00E7A725 /* App Delegate */,
+				C31E0914199B281900EEC89B /* Views */,
 				C3BFD579199ABFC100E7A725 /* View Controllers */,
 				C3BFD578199ABFB000E7A725 /* Storyboards */,
 				C3BFD581199AC1E800E7A725 /* Resources */,
@@ -298,6 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3BFD580199AC02400E7A725 /* RootViewController.m in Sources */,
+				C31E0917199B284500EEC89B /* ScrollViewContainer.m in Sources */,
 				C3BFD57D199AC01A00E7A725 /* AppDelegate.m in Sources */,
 				C3BFD54D199ABCE600E7A725 /* main.m in Sources */,
 			);
@@ -434,10 +448,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Rafferty II (SG33496SQY)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Rafferty II (SG33496SQY)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CardsCodingChallenge/CardsCodingChallenge-Prefix.pch";
 				INFOPLIST_FILE = "CardsCodingChallenge/CardsCodingChallenge-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "F2725CC8-46B0-41E0-8DB2-44ECE25E4E02";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -514,6 +531,7 @@
 				C3BFD574199ABCE600E7A725 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C3BFD575199ABCE600E7A725 /* Build configuration list for PBXNativeTarget "CardsCodingChallengeTests" */ = {
 			isa = XCConfigurationList;
@@ -522,6 +540,7 @@
 				C3BFD577199ABCE600E7A725 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
