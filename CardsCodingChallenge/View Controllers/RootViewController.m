@@ -56,7 +56,7 @@
     // Set up the array to hold the views for each page
     self.pageViews = [[NSMutableArray alloc] init];
     
-    for(NSInteger i = 0; i < 100; ++i)
+    for(NSInteger i = 0; i < MAX_NUMBER_OF_IMAGES; ++i)
     {
         [self.pageViews addObject:[NSNull null]];
     }
@@ -67,7 +67,7 @@
     // Set up the content size of the scroll view
     CGSize pagesScrollViewSize = self.scrollView.frame.size;
     
-    [[self scrollView] setContentSize:CGSizeMake(pagesScrollViewSize.width * 100,
+    [[self scrollView] setContentSize:CGSizeMake(pagesScrollViewSize.width * MAX_NUMBER_OF_IMAGES,
                                                  pagesScrollViewSize.height)];
     
     // Load the initial set of pages that are on screen
@@ -100,8 +100,6 @@
     
     NSInteger page = (NSInteger)floor((self.scrollView.contentOffset.x * 2.0f + pageWidth) / (pageWidth * 2.0f));
     
-    NSLog(@"Page Number - %li", (long)page);
-    
     // Work out which pages you want to load
     NSInteger firstPage = page - 1;
     NSInteger lastPage  = page + 1;
@@ -117,7 +115,7 @@
         [self loadPage:i];
     }
     
-    for(NSInteger i = lastPage + 1; i < 100; i++)
+    for(NSInteger i = lastPage + 1; i < MAX_NUMBER_OF_IMAGES; i++)
     {
         [self purgePage:i];
     }
@@ -125,30 +123,50 @@
 
 - (void)loadPage:(NSInteger)page
 {
-    if(page < 0 || page >= 100)
+    // If the current page number is less than 0 OR greater than 100 we exit the function
+    if(page < 0 || page >= MAX_NUMBER_OF_IMAGES)
     {
-        // If it's outside the range of what we have to display, then do nothing
         return;
     }
     
-    // Load an individual page, first checking if you've already loaded it
     UIView *pageView = [[self pageViews] objectAtIndex:page];
     
+    // Check if the current UIView exists
     if((NSNull *)pageView == [NSNull null])
     {
         CGRect frame = self.scrollView.bounds;
         
         frame.origin.x = frame.size.width * page;
         frame.origin.y = 0.0f;
-        frame          = CGRectInset(frame, 10.0f, 0.0f);
+        frame          = CGRectInset(frame, 0.0f, 0.0f);
         
         UIImageView *tempImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"smallCardBG.png"]];
         
         [tempImageView setContentMode:UIViewContentModeScaleAspectFit];
         [tempImageView setFrame:frame];
         
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(tempImageView.bounds.origin.x + 140,
+                                                                       tempImageView.bounds.origin.y + 15,
+                                                                       25,
+                                                                       40)];
+        
+        [tempLabel setTextColor:[UIColor darkGrayColor]];
+        [tempLabel setTextAlignment:NSTextAlignmentCenter];
+        
+        [tempLabel setFont:[UIFont fontWithName:@"HelveticaNeue"
+                                           size:40]];
+        
+        [tempLabel setText:[NSString stringWithFormat:@"%i", page]];
+        
+        [tempImageView addSubview:tempLabel];
+        
+        // Add the UIImageView to the UIScrollView
         [[self scrollView] addSubview:tempImageView];
         
+        // Add the UILabel to the UIScrollView
+//        [[self scrollView] addSubview:tempLabel];
+        
+        // Add the UIImageView to the NSMutableArray for later use
         [[self pageViews] replaceObjectAtIndex:page
                                     withObject:tempImageView];
     }
@@ -156,19 +174,20 @@
 
 - (void)purgePage:(NSInteger)page
 {
-    if (page < 0 || page >= 100)
+    // If the current page number is less than 0 OR greater than 100 we exit the function
+    if (page < 0 || page >= MAX_NUMBER_OF_IMAGES)
     {
-        // If it's outside the range of what you have to display, then do nothing
         return;
     }
     
-    // Remove a page from the scroll view and reset the container array
     UIView *pageView = [[self pageViews] objectAtIndex:page];
     
+    // Check if the current UIView exists
     if((NSNull *)pageView != [NSNull null])
     {
         [pageView removeFromSuperview];
         
+        // Remove the UIView from the NSMutableArray
         [[self pageViews] replaceObjectAtIndex:page
                                     withObject:[NSNull null]];
     }

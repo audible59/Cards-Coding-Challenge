@@ -39,6 +39,7 @@
 /* Begin PBXFileReference section */
 		C31E0915199B284500EEC89B /* ScrollViewContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScrollViewContainer.h; path = Views/ScrollViewContainer.h; sourceTree = "<group>"; };
 		C31E0916199B284500EEC89B /* ScrollViewContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScrollViewContainer.m; path = Views/ScrollViewContainer.m; sourceTree = "<group>"; };
+		C3420627199BBD5E00CBF3D5 /* Macros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Macros.h; path = Macros/Macros.h; sourceTree = "<group>"; };
 		C3BFD53D199ABCE600E7A725 /* CardsCodingChallenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardsCodingChallenge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3BFD540199ABCE600E7A725 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C3BFD542199ABCE600E7A725 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -95,6 +96,14 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		C3420626199BBD3F00CBF3D5 /* Macros */ = {
+			isa = PBXGroup;
+			children = (
+				C3420627199BBD5E00CBF3D5 /* Macros.h */,
+			);
+			name = Macros;
+			sourceTree = "<group>";
+		};
 		C3BFD534199ABCE600E7A725 = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +140,7 @@
 				C3BFD57A199ABFCF00E7A725 /* App Delegate */,
 				C31E0914199B281900EEC89B /* Views */,
 				C3BFD579199ABFC100E7A725 /* View Controllers */,
+				C3420626199BBD3F00CBF3D5 /* Macros */,
 				C3BFD578199ABFB000E7A725 /* Storyboards */,
 				C3BFD581199AC1E800E7A725 /* Resources */,
 				C3BFD55B199ABCE600E7A725 /* Images.xcassets */,
