@@ -6,15 +6,43 @@
 //  Copyright (c) 2014 com.envoy.www. All rights reserved.
 //
 
-#import "RootViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
-@interface RootViewController () <UIScrollViewDelegate>
+#import "RootViewController.h"
+#import "ScrollViewContainer.h"
+
+@interface RootViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate>
+
+#pragma mark -
+#pragma mark PRIVATE Primitive Type Properties
+#pragma mark -
+
+@property (nonatomic, assign) CGFloat lastContentOffset;
 
 #pragma mark -
 #pragma mark PRIVATE NSMutableArray Property
 #pragma mark -
 
-@property (nonatomic, strong) NSMutableArray *pageViews;
+@property (strong, nonatomic) NSMutableArray *pageViewsMutableArray;
+@property (strong, nonatomic) NSMutableArray *visiblePageViewsMutableArray;
+
+#pragma mark -
+#pragma mark PRIVATE UIDynamicAnimator Property
+#pragma mark -
+
+@property (strong, nonatomic) UIDynamicAnimator *animator;
+
+#pragma mark -
+#pragma mark PRIVATE UIView Property
+#pragma mark -
+
+@property (strong, nonatomic) UIView *currentPageView;
+
+#pragma mark -
+#pragma mark PRIVATE ScrollViewContainer Property
+#pragma mark -
+
+@property (strong, nonatomic) IBOutlet ScrollViewContainer *scrollViewContainer;
 
 #pragma mark -
 #pragma mark PRIVATE UIScrollView Property
@@ -53,12 +81,15 @@
 //    [[self scrollView] setShowsVerticalScrollIndicator:NO];
 //    [[self scrollView] setShowsHorizontalScrollIndicator:NO];
     
-    // Set up the array to hold the views for each page
-    self.pageViews = [[NSMutableArray alloc] init];
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:[self scrollView]];
+    
+    // Initialize the NSMutableArrays
+    self.pageViewsMutableArray        = [[NSMutableArray alloc] initWithCapacity:MAX_NUMBER_OF_IMAGES];
+    self.visiblePageViewsMutableArray = [[NSMutableArray alloc] initWithCapacity:3];
     
     for(NSInteger i = 0; i < MAX_NUMBER_OF_IMAGES; ++i)
     {
-        [self.pageViews addObject:[NSNull null]];
+        [[self pageViewsMutableArray] addObject:[NSNull null]];
     }
 }
 
@@ -70,8 +101,36 @@
     [[self scrollView] setContentSize:CGSizeMake(pagesScrollViewSize.width * MAX_NUMBER_OF_IMAGES,
                                                  pagesScrollViewSize.height)];
     
+    UISwipeGestureRecognizer *gestureRecognizer;
+    
+    gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                  action:@selector(didSwipeScrollView:)];
+    
+    [gestureRecognizer setDirection:(UISwipeGestureRecognizerDirectionUp)];
+    
+    [[self scrollView] addGestureRecognizer:gestureRecognizer];
+    
+    gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                  action:@selector(didSwipeScrollView:)];
+    
+    [gestureRecognizer setDirection:(UISwipeGestureRecognizerDirectionDown)];
+    
+    [[self scrollView] addGestureRecognizer:gestureRecognizer];
+    
     // Load the initial set of pages that are on screen
     [self loadVisiblePages];
+    
+    for(int i = 0; i < 3; i++)
+    {
+        [[self visiblePageViewsMutableArray] addObject:[[self pageViewsMutableArray] objectAtIndex:i]];
+    }
+    
+    // Adjust the alpha for all visible pages
+	[[self pageViewsMutableArray] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        
+		[self setAlphaForPage:obj];
+        
+	}];
 }
 
 - (void)didReceiveMemoryWarning
@@ -85,12 +144,74 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    if([self lastContentOffset] > scrollView.contentOffset.x)
+    {
+        // The user is scrolling right
+        
+    }
+    else if([self lastContentOffset] < scrollView.contentOffset.x)
+    {
+        // The user is scrolling left
+        
+    }
+    
+    self.lastContentOffset = scrollView.contentOffset.x;
+    
     // Load the pages that are now on screen
     [self loadVisiblePages];
+    
+    // Adjust the alpha for all visible pages
+	[[self pageViewsMutableArray] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        
+		[self setAlphaForPage:obj];
+        
+	}];
 }
 
 #pragma mark -
-#pragma mark Helper Methods
+#pragma mark SELECTOR Methods
+#pragma mark -
+
+- (void)didSwipeScrollView:(UISwipeGestureRecognizer *)gesture
+{
+    switch([gesture direction])
+    {
+        case UISwipeGestureRecognizerDirectionUp:
+            
+            NSLog(@"User swiped up");
+            
+            [self animateScrollViewForFullView:YES];
+            
+            break;
+            
+        case UISwipeGestureRecognizerDirectionDown:
+            
+            NSLog(@"User swiped down");
+            
+            [self animateScrollViewForFullView:NO];
+            
+            break;
+            
+        case UISwipeGestureRecognizerDirectionLeft:
+            
+            // We only want to handle the up and down Swipe Getures
+            
+            break;
+            
+        case UISwipeGestureRecognizerDirectionRight:
+            
+            // We only want to handle the up and down Swipe Getures
+            
+            break;
+            
+        default:
+            
+            break;
+    }
+}
+
+#pragma mark -
+#pragma mark UI Helper Methods
 #pragma mark -
 
 - (void)loadVisiblePages
@@ -115,6 +236,7 @@
         [self loadPage:i];
     }
     
+    // Purge anything after the last page
     for(NSInteger i = lastPage + 1; i < MAX_NUMBER_OF_IMAGES; i++)
     {
         [self purgePage:i];
@@ -129,7 +251,7 @@
         return;
     }
     
-    UIView *pageView = [[self pageViews] objectAtIndex:page];
+    UIView *pageView = [[self pageViewsMutableArray] objectAtIndex:page];
     
     // Check if the current UIView exists
     if((NSNull *)pageView == [NSNull null])
@@ -138,17 +260,29 @@
         
         frame.origin.x = frame.size.width * page;
         frame.origin.y = 0.0f;
-        frame          = CGRectInset(frame, 0.0f, 0.0f);
+        frame          = CGRectInset(frame, 10.0f, 0.0f);
         
         UIImageView *tempImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"smallCardBG.png"]];
         
         [tempImageView setContentMode:UIViewContentModeScaleAspectFit];
         [tempImageView setFrame:frame];
         
-        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(tempImageView.bounds.origin.x + 140,
-                                                                       tempImageView.bounds.origin.y + 15,
-                                                                       25,
-                                                                       40)];
+        UILabel *tempLabel;
+        
+        if(page < 9)
+        {
+            tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(tempImageView.bounds.origin.x + 125,
+                                                                  tempImageView.bounds.origin.y + 15,
+                                                                  25,
+                                                                  40)];
+        }
+        else if(page > 9 || page < 100)
+        {
+            tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(tempImageView.bounds.origin.x + 110,
+                                                                  tempImageView.bounds.origin.y + 15,
+                                                                  25,
+                                                                  40)];
+        }
         
         [tempLabel setTextColor:[UIColor darkGrayColor]];
         [tempLabel setTextAlignment:NSTextAlignmentCenter];
@@ -156,19 +290,33 @@
         [tempLabel setFont:[UIFont fontWithName:@"HelveticaNeue"
                                            size:40]];
         
-        [tempLabel setText:[NSString stringWithFormat:@"%i", page]];
+        [tempLabel setText:[NSString stringWithFormat:@"%li", (long)page]];
+        
+        [tempLabel sizeToFit];
         
         [tempImageView addSubview:tempLabel];
+        
+        CGFloat pageWidth = self.scrollView.frame.size.width;
+        
+        NSInteger page = (NSInteger)floor((self.scrollView.contentOffset.x * 2.0f + pageWidth) / (pageWidth * 2.0f));
+        
+        // Work out which pages you want to load
+        NSInteger firstPage = page - 1;
+        NSInteger lastPage  = page + 1;
+        
+        if(page)
+        {
+            
+        }
+        
+        tempImageView.transform = CGAffineTransformMakeScale(0.6, 0.6);
         
         // Add the UIImageView to the UIScrollView
         [[self scrollView] addSubview:tempImageView];
         
-        // Add the UILabel to the UIScrollView
-//        [[self scrollView] addSubview:tempLabel];
-        
         // Add the UIImageView to the NSMutableArray for later use
-        [[self pageViews] replaceObjectAtIndex:page
-                                    withObject:tempImageView];
+        [[self pageViewsMutableArray] replaceObjectAtIndex:page
+                                                withObject:tempImageView];
     }
 }
 
@@ -180,7 +328,7 @@
         return;
     }
     
-    UIView *pageView = [[self pageViews] objectAtIndex:page];
+    UIView *pageView = [[self pageViewsMutableArray] objectAtIndex:page];
     
     // Check if the current UIView exists
     if((NSNull *)pageView != [NSNull null])
@@ -188,56 +336,63 @@
         [pageView removeFromSuperview];
         
         // Remove the UIView from the NSMutableArray
-        [[self pageViews] replaceObjectAtIndex:page
+        [[self pageViewsMutableArray] replaceObjectAtIndex:page
                                     withObject:[NSNull null]];
     }
 }
 
-- (void)initializeScrollView
+- (void)setAlphaForPage:(UIView *)page
 {
-    int imageCountInt = 4;
-    
-    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(self.scrollView.frame.origin.x,
-                                                                     self.scrollView.frame.origin.y,
-                                                                     self.scrollView.frame.size.width,
-                                                                     self.scrollView.frame.size.height)];
-    
-    [[self scrollView] setDelegate:self];
-    [[self scrollView] setPagingEnabled:YES];
-    [[self scrollView] setBackgroundColor:[UIColor lightGrayColor]];
-    [[self scrollView] setShowsVerticalScrollIndicator:NO];
-    [[self scrollView] setShowsHorizontalScrollIndicator:NO];
-    
-    for(int i = 0; i < imageCountInt; i++)
+    // Check if the current UIView exists
+    if((NSNull *)page != [NSNull null])
     {
-        CGFloat xOrigin = i * self.scrollView.bounds.size.width;
+        CGFloat offset = self.scrollView.contentOffset.x;
+        CGFloat origin = page.frame.origin.x;
+        CGFloat delta = fabs(origin - offset);
+        CGFloat alpha = 0.0;
         
-        UIView *tempView = [[UIView alloc] initWithFrame:CGRectMake(xOrigin + 20,
-                                                                    0,
-                                                                    self.scrollView.bounds.size.width,
-                                                                    self.scrollView.bounds.size.height)];
+        if(delta < page.frame.size.width)
+        {
+            alpha = 1 - delta / page.frame.size.width * 0.7;
+        }
+        else
+        {
+            alpha = 0.3;
+        }
         
-        UIImageView *tempImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"smallCardBG.png"]];
-        
-        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(tempView.frame.origin.x,
-                                                                       tempView.frame.origin.y - 30,
-                                                                       10,
-                                                                       30)];
-        
-        [tempLabel setTextColor:[UIColor darkGrayColor]];
-        [tempLabel setTextAlignment:NSTextAlignmentCenter];
-        [tempLabel setText:[NSString stringWithFormat:@"%i", i]];
-        
-        [tempView addSubview:tempImageView];
-        [tempView addSubview:tempLabel];
-        
-        [[self scrollView] addSubview:tempView];
+        [page setAlpha:alpha];
     }
+}
+
+- (void)animateScrollViewForFullView:(BOOL)shouldDisplayFullView
+{
+    [[self animator] removeAllBehaviors];
     
-    [[self scrollView] setContentSize:CGSizeMake(self.scrollView.bounds.size.width * imageCountInt,
-                                                 self.scrollView.bounds.size.height)];
+    CGFloat boundaryPointY    = (shouldDisplayFullView) ? -10.0 : self.scrollViewContainer.frame.size.height;
+    CGFloat gravityDirectionY = (shouldDisplayFullView) ? -0.1 : 0.1;
     
-    [[self view] addSubview:[self scrollView]];
+    // Create and add the UIGravityBehaviour to the UIDynamicAnimator object
+    UIGravityBehavior *gravityBehavior = [[UIGravityBehavior alloc] initWithItems:@[[self scrollView]]];
+    
+    [gravityBehavior setGravityDirection:CGVectorMake(0.0, gravityDirectionY)];
+    
+    [[self animator] addBehavior:gravityBehavior];
+    
+    // Create and add the UICollisionBehavior to the UIDynamicAnimator object
+    UICollisionBehavior *collisionBehavior = [[UICollisionBehavior alloc] initWithItems:@[[self scrollView]]];
+    
+    [collisionBehavior addBoundaryWithIdentifier:@"scrollViewBoundary"
+                                       fromPoint:CGPointMake(0.0, boundaryPointY)
+                                         toPoint:CGPointMake(self.scrollViewContainer.frame.origin.x, boundaryPointY)];
+    
+    [self.animator addBehavior:collisionBehavior];
+    
+    // Create and add the UIDynamicItemBehavior to the UIDynamicAnimator object
+    UIDynamicItemBehavior *menuViewBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[[self scrollView]]];
+    
+    [menuViewBehavior setElasticity:0.2];
+    
+    [self.animator addBehavior:menuViewBehavior];
 }
 
 @end

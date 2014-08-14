@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class ScrollViewContainer;
+
 @interface RootViewController : UIViewController
 
 @end

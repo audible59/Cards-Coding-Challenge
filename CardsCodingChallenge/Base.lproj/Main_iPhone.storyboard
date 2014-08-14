@@ -12,28 +12,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" id="Oqu-yA-FJf" customClass="ScrollViewContainer">
-                                <rect key="frame" x="-10" y="328" width="340" height="260"/>
+                            <view contentMode="scaleToFill" id="cKb-mR-GAM" customClass="ScrollViewContainer">
+                                <rect key="frame" x="0.0" y="308" width="320" height="260"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="yFu-ah-TYH">
-                                        <rect key="frame" x="20" y="0.0" width="300" height="240"/>
+                                    <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="3yp-mB-bMM">
+                                        <rect key="frame" x="20" y="10" width="280" height="240"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <connections>
-                                            <outlet property="delegate" destination="vXZ-lx-hvc" id="1Wc-OW-Dfc"/>
+                                            <outlet property="delegate" destination="vXZ-lx-hvc" id="a6C-oj-42q"/>
                                         </connections>
                                     </scrollView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <outlet property="scrollView" destination="yFu-ah-TYH" id="8aF-3W-h93"/>
+                                    <outlet property="scrollView" destination="3yp-mB-bMM" id="mCc-Vu-Rdq"/>
                                 </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="scrollView" destination="yFu-ah-TYH" id="Kmv-bg-wT6"/>
+                        <outlet property="scrollView" destination="3yp-mB-bMM" id="Ija-HK-mPC"/>
+                        <outlet property="scrollViewContainer" destination="cKb-mR-GAM" id="4Gu-N3-oOk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
