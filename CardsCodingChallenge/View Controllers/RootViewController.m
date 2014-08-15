@@ -40,15 +40,16 @@
 @property (strong, nonatomic) IBOutlet ScrollViewContainer *scrollViewContainer;
 
 #pragma mark -
-#pragma mark PRIVATE UIScrollView Property
+#pragma mark PRIVATE UIScrollView Properties
 #pragma mark -
 
-@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (strong, nonatomic) IBOutlet UIScrollView *horizontalScrollView;
 
 #pragma mark -
 #pragma mark PRIVATE NSMutableArray Property
 #pragma mark -
 
+@property (strong, nonatomic) NSMutableArray *accumulator;
 @property (strong, nonatomic) NSMutableArray *pageViewsMutableArray;
 
 #pragma mark -
@@ -56,6 +57,12 @@
 #pragma mark -
 
 @property (strong, nonatomic) UIDynamicAnimator *animator;
+
+#pragma mark -
+#pragma mark PRIVATE UIDynamicAnimator Property
+#pragma mark -
+
+@property (strong, nonatomic) UIPanGestureRecognizer *panGesture;
 
 #pragma mark -
 #pragma mark PRIVATE Helper Methods
@@ -82,10 +89,10 @@
     // Set the BOOL to YES because we want to show the entire UIScrollView
     [self setIsScrollViewFullyVisible:YES];
     
-    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:[self scrollView]];
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:[self horizontalScrollView]];
     
     // Initialize the NSMutableArrays
-    self.pageViewsMutableArray        = [[NSMutableArray alloc] initWithCapacity:MAX_NUMBER_OF_IMAGES];
+    self.pageViewsMutableArray = [[NSMutableArray alloc] initWithCapacity:MAX_NUMBER_OF_IMAGES];
     
     for(NSInteger i = 0; i < MAX_NUMBER_OF_IMAGES; ++i)
     {
@@ -95,31 +102,46 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    // Set the content size of the scroll view
-    CGSize pagesScrollViewSize = self.scrollView.frame.size;
+    // Set the content size of the UIScrollView
+    CGSize pagesHorizontalScrollViewSize = self.horizontalScrollView.frame.size;
     
-    [[self scrollView] setContentSize:CGSizeMake(pagesScrollViewSize.width * MAX_NUMBER_OF_IMAGES,
-                                                 pagesScrollViewSize.height)];
+    [[self horizontalScrollView] setContentSize:CGSizeMake(pagesHorizontalScrollViewSize.width * MAX_NUMBER_OF_IMAGES,
+                                                           pagesHorizontalScrollViewSize.height)];
     
-    [[self scrollView] setDirectionalLockEnabled:YES];
+    [[self horizontalScrollView] setDirectionalLockEnabled:YES];
     
+    // TODO: Add UIPanGestureRecognizer to the UIScrollView to pan the UIScrollView up and down
+//    self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self
+//                                                              action:@selector(didPanScrollView:)];
+//    
+//    [[self panGesture] setDelegate:self];
+//    
+//    [[self horizontalScrollView]  addGestureRecognizer:[self panGesture]];
+//    [[[self horizontalScrollView] panGestureRecognizer] setEnabled:NO];
+    
+    /*
+     *
+     * The UISwipeGestureRecognizer is a temporary solution for getting the UIScrollView to move up and down.
+     * The goal is to use a UIPanGestureRecognizer so that the user can pan the UIScrollView up and down smoothly.
+     *
+     */
     // Instantiate and add a UISwipeGestureRecognizer for both up and down directions
-    UISwipeGestureRecognizer *gestureRecognizer;
+    UISwipeGestureRecognizer *swipeGestureRecognizer;
     
-    gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+    swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                   action:@selector(didSwipeScrollView:)];
     
-    [gestureRecognizer setDirection:(UISwipeGestureRecognizerDirectionUp)];
+    [swipeGestureRecognizer setDirection:(UISwipeGestureRecognizerDirectionUp)];
     
-    [[self scrollView] addGestureRecognizer:gestureRecognizer];
+    [[self horizontalScrollView] addGestureRecognizer:swipeGestureRecognizer];
     
-    gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+    swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                   action:@selector(didSwipeScrollView:)];
     
-    [gestureRecognizer setDirection:(UISwipeGestureRecognizerDirectionDown)];
+    [swipeGestureRecognizer setDirection:(UISwipeGestureRecognizerDirectionDown)];
     
     // Add the UISwipeGestureRecognizer to the UIScrollView
-    [[self scrollView] addGestureRecognizer:gestureRecognizer];
+    [[self horizontalScrollView] addGestureRecognizer:swipeGestureRecognizer];
     
     // Load the initial set of pages that are on screen
     [self loadVisiblePages];
@@ -144,16 +166,54 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    // Load the pages that are on the screen
-    [self loadVisiblePages];
-    
-    // Adjust the alpha for all visible pages
-	[[self pageViewsMutableArray] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+    if(scrollView == [self horizontalScrollView])
+    {
+        // Load the pages that are on the screen
+        [self loadVisiblePages];
         
-		[self setAlphaForPage:obj];
+        // Adjust the alpha for all visible pages
+        [[self pageViewsMutableArray] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+            
+            [self setAlphaForPage:obj];
 //        [self setTransformForPage:obj];
-        
-	}];
+            
+        }];
+    }
+}
+
+#pragma mark -
+#pragma mark UIGestureRecognizer Delegate Methods
+#pragma mark -
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    if([gestureRecognizer      isEqual:[self panGesture]] &&
+       [otherGestureRecognizer isEqual:[[self horizontalScrollView] panGestureRecognizer]])
+    {
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if([gestureRecognizer isEqual:[self panGesture]])
+    {
+        if([gestureRecognizer numberOfTouches] > 0)
+        {
+            CGPoint translation = [[self panGesture] velocityInView:[self horizontalScrollView]];
+            
+            return fabs(translation.y) > fabs(translation.x);
+        }
+        else
+        {
+            return NO;
+        }
+    }
+    
+    return YES;
 }
 
 #pragma mark -
@@ -169,9 +229,10 @@
 #pragma mark SELECTOR Methods
 #pragma mark -
 
-- (void)didSwipeScrollView:(UISwipeGestureRecognizer *)gesture
+// Temporary solution that will animate the UIScrollView up and down
+- (void)didSwipeScrollView:(UISwipeGestureRecognizer *)swipeGestureRecognizer
 {
-    switch([gesture direction])
+    switch([swipeGestureRecognizer direction])
     {
         case UISwipeGestureRecognizerDirectionUp:
             
@@ -207,6 +268,63 @@
     }
 }
 
+// Primary solution that will pan the UIScrollView up and down
+- (void)didPanScrollView:(UIPanGestureRecognizer *)panGestureRecognizer
+{
+    if([panGestureRecognizer numberOfTouches] > 0)
+    {
+        CGPoint translation = [[self panGesture] velocityInView:[self horizontalScrollView]];
+        
+        // If we are swiping up or down
+        if(fabs(translation.y) > fabs(translation.x))
+        {
+            CGPoint translation = [panGestureRecognizer translationInView:[self view]];
+            
+            // If we have reached the MAX height for the UIPanGestureRecognizer
+            if((panGestureRecognizer.view.center.y + translation.y) == self.view.bounds.size.height)
+            {
+                // TODO: Add Bounce animation to the Horizontal UIScrollView
+            }
+            else if((panGestureRecognizer.view.center.y + translation.y) == self.view.bounds.size.height)
+            {
+                [[panGestureRecognizer view] setCenter:CGPointMake(panGestureRecognizer.view.center.x,
+                                                                   MAX(panGestureRecognizer.view.center.y + translation.y, self.view.bounds.size.height))];
+                
+                [panGestureRecognizer setTranslation:CGPointMake(0, 0)
+                                              inView:[self view]];
+                
+                if([panGestureRecognizer state] == UIGestureRecognizerStateEnded)
+                {
+                    CGPoint velocity = [panGestureRecognizer velocityInView:[self view]];
+                    
+                    CGFloat magnitude = sqrtf((velocity.x * velocity.x) + (velocity.y * velocity.y));
+                    
+                    CGFloat slideMult = magnitude / 200;
+                    
+                    float slideFactor = 0.1 * slideMult; // Increase for more of a slide
+                    
+                    CGPoint finalPoint = CGPointMake(panGestureRecognizer.view.center.x,
+                                                     panGestureRecognizer.view.center.y + (velocity.y * slideFactor));
+                    
+                    finalPoint.x = MIN(MAX(finalPoint.x, 0), self.view.bounds.size.width);
+                    finalPoint.y = MIN(MAX(finalPoint.y, 0), self.view.bounds.size.height);
+                    
+                    [UIView animateWithDuration:slideFactor * 2
+                                          delay:0.0f
+                                        options:UIViewAnimationOptionCurveEaseOut
+                                     animations:^{
+                                         
+                                         [[panGestureRecognizer view] setCenter:finalPoint];
+                                         
+                                     }
+                                     completion:nil];
+                    
+                }
+            }
+        }
+    }
+}
+
 #pragma mark -
 #pragma mark - Segue Navigation
 #pragma mark -
@@ -238,9 +356,9 @@
 - (void)loadVisiblePages
 {
     // Determine which page is currently visible
-    CGFloat pageWidth = self.scrollView.frame.size.width;
+    CGFloat pageWidth = self.horizontalScrollView.frame.size.width;
     
-    NSInteger page = (NSInteger)floor((self.scrollView.contentOffset.x * 2.0f + pageWidth) / (pageWidth * 2.0f));
+    NSInteger page = (NSInteger)floor((self.horizontalScrollView.contentOffset.x * 2.0f + pageWidth) / (pageWidth * 2.0f));
     
     // Work out which pages you want to load
     NSInteger firstPage = page - 1;
@@ -279,7 +397,7 @@
     if((NSNull *)pageView == [NSNull null])
     {
         // Setup the frame to be used for the UIImageView
-        CGRect frame = self.scrollView.bounds;
+        CGRect frame = self.horizontalScrollView.bounds;
         
         frame.origin.x = frame.size.width * page;
         frame.origin.y = 0.0f;
@@ -297,14 +415,14 @@
         if(page < 9)
         {
             tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(tempImageView.bounds.origin.x + 125,
-                                                                  tempImageView.bounds.origin.y + 15,
+                                                                  tempImageView.bounds.origin.y + 55,
                                                                   25,
                                                                   40)];
         }
         else if(page > 9 || page < 100)
         {
             tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(tempImageView.bounds.origin.x + 110,
-                                                                  tempImageView.bounds.origin.y + 15,
+                                                                  tempImageView.bounds.origin.y + 55,
                                                                   25,
                                                                   40)];
         }
@@ -324,7 +442,7 @@
         [tempImageView addSubview:tempLabel];
         
         // Add the UIImageView to the UIScrollView
-        [[self scrollView] addSubview:tempImageView];
+        [[self horizontalScrollView] addSubview:tempImageView];
         
         // Add the UIImageView to the NSMutableArray for later use
         [[self pageViewsMutableArray] replaceObjectAtIndex:page
@@ -358,7 +476,7 @@
     // Check if the current UIView exists
     if((NSNull *)page != [NSNull null])
     {
-        CGFloat offset = self.scrollView.contentOffset.x;
+        CGFloat offset = self.horizontalScrollView.contentOffset.x;
         CGFloat origin = page.frame.origin.x;
         CGFloat delta = fabs(origin - offset);
         CGFloat alpha = 0.0;
@@ -376,13 +494,14 @@
     }
 }
 
+// TODO: Add transform to the UIImageView that is centered within the UIScrollView
 - (void)setTransformForPage:(UIView *)page
 {
     // Check if the current UIView exists
     if((NSNull *)page != [NSNull null])
     {
-        float position = page.center.x - self.scrollView.contentOffset.x;
-        float offset   = 2.0 - (fabs(self.scrollView.center.x - position) * 1.0) / self.scrollView.center.x;
+        float position = page.center.x - self.horizontalScrollView.contentOffset.x;
+        float offset   = 2.0 - (fabs(self.horizontalScrollView.center.x - position) * 1.0) / self.horizontalScrollView.center.x;
         
         NSLog(@"OFFSET - %f", offset);
         
@@ -406,10 +525,10 @@
                                 options:UIViewAnimationOptionCurveEaseInOut
                              animations:^{
                              
-                                 self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x,
-                                                                    self.scrollView.frame.origin.y - 100,
-                                                                    self.scrollView.frame.size.width,
-                                                                    self.scrollView.frame.size.height);
+                                 self.horizontalScrollView.frame = CGRectMake(self.horizontalScrollView.frame.origin.x,
+                                                                    self.horizontalScrollView.frame.origin.y - 100,
+                                                                    self.horizontalScrollView.frame.size.width,
+                                                                    self.horizontalScrollView.frame.size.height);
                                  
                                  // Hide the UILabel
                                  [[self helloLabel] setAlpha:0.0f];
@@ -435,10 +554,10 @@
                                 options:UIViewAnimationOptionCurveEaseInOut
                              animations:^{
                                  
-                                 self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x,
-                                                                    self.scrollView.frame.origin.y + 100,
-                                                                    self.scrollView.frame.size.width,
-                                                                    self.scrollView.frame.size.height);
+                                 self.horizontalScrollView.frame = CGRectMake(self.horizontalScrollView.frame.origin.x,
+                                                                    self.horizontalScrollView.frame.origin.y + 100,
+                                                                    self.horizontalScrollView.frame.size.width,
+                                                                    self.horizontalScrollView.frame.size.height);
                                  
                                  // Show the UILabel
                                  [[self helloLabel] setAlpha:1.0f];

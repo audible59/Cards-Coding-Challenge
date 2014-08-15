@@ -33,7 +33,7 @@
     
     if(view == self)
     {
-        return [self scrollView];
+        return [self horizontalScrollView];
     }
     
     return view;

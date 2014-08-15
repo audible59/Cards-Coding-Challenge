@@ -10,6 +10,6 @@
 
 @interface ScrollViewContainer : UIView
 
-@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (strong, nonatomic) IBOutlet UIScrollView *horizontalScrollView;
 
 @end

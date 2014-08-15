@@ -17,7 +17,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="3yp-mB-bMM">
-                                        <rect key="frame" x="20" y="0.0" width="280" height="250"/>
+                                        <rect key="frame" x="20" y="5" width="280" height="250"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <connections>
                                             <outlet property="delegate" destination="vXZ-lx-hvc" id="a6C-oj-42q"/>
@@ -26,7 +26,7 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <outlet property="scrollView" destination="3yp-mB-bMM" id="mCc-Vu-Rdq"/>
+                                    <outlet property="horizontalScrollView" destination="3yp-mB-bMM" id="z2C-2w-scM"/>
                                 </connections>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="d7d-Ba-Ix5">
@@ -53,7 +53,7 @@
                     <navigationItem key="navigationItem" id="TJn-7F-MWh"/>
                     <connections>
                         <outlet property="helloLabel" destination="Ykp-Ld-3ed" id="mkH-Qc-xUe"/>
-                        <outlet property="scrollView" destination="3yp-mB-bMM" id="Ija-HK-mPC"/>
+                        <outlet property="horizontalScrollView" destination="3yp-mB-bMM" id="X3S-yC-uSg"/>
                         <outlet property="scrollViewContainer" destination="cKb-mR-GAM" id="4Gu-N3-oOk"/>
                     </connections>
                 </viewController>
@@ -138,7 +138,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RXe-Bl-VyF" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="1lf-dt-yP5" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="337" y="261"/>
+            <point key="canvasLocation" x="645" y="261"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
