@@ -25,14 +25,14 @@ Instruction for using the Card Coding Challenge iOS Application within the devic
                               <li>The user can swipe down to partially hide the scroll view and swipe up to show the scroll view.
                               <ul>
                                     <li>When the scroll view is swiped down the label titled "Hello" will fade into the center of the Main view</li>
-                                    <li>Wehn the scroll view is swiped up the label titled "Hello" will fade out of the Main view</li>
+                                    <li>When the scroll view is swiped up the label titled "Hello" will fade out of the Main view</li>
                               </ul>
                               </li>
                         </ul>
                   </li>
                   <li>Button Titled "Open"
                         <ul>
-                              <li>- The user can press the button titled "Open" to open the Menu View</li>
+                              <li>The user can press the button titled "Open" to open the Menu View</li>
                         </ul>
                   </li>
             </ul>
