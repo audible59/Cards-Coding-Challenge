@@ -8,4 +8,8 @@
 
 // MAX NUMBER OF UIIMAGEVIEWS CONSTANT
 
-#define MAX_NUMBER_OF_IMAGES 100
+#define MAX_NUMBER_OF_IMAGES 300
+
+// UISTORYBOARDSEGUE IDENTIFIERS
+
+#define kUnwindCustomMenuViewControllerSegue @"UnwindCustomMenuViewControllerSegue"

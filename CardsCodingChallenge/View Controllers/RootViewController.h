@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class ScrollViewContainer;
+@class CustomMenuUnwindSegue;
 
 @interface RootViewController : UIViewController
 

@@ -10,6 +10,7 @@
 
 #import "RootViewController.h"
 #import "ScrollViewContainer.h"
+#import "CustomMenuUnwindSegue.h"
 
 @interface RootViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
@@ -17,20 +18,14 @@
 #pragma mark PRIVATE Primitive Type Properties
 #pragma mark -
 
+@property (assign) BOOL isScrollViewFullyVisible;
 @property (nonatomic, assign) CGFloat lastContentOffset;
 
 #pragma mark -
-#pragma mark PRIVATE NSMutableArray Property
+#pragma mark PRIVATE UILabel Property
 #pragma mark -
 
-@property (strong, nonatomic) NSMutableArray *pageViewsMutableArray;
-@property (strong, nonatomic) NSMutableArray *visiblePageViewsMutableArray;
-
-#pragma mark -
-#pragma mark PRIVATE UIDynamicAnimator Property
-#pragma mark -
-
-@property (strong, nonatomic) UIDynamicAnimator *animator;
+@property (strong, nonatomic) IBOutlet UILabel *helloLabel;
 
 #pragma mark -
 #pragma mark PRIVATE UIView Property
@@ -49,6 +44,18 @@
 #pragma mark -
 
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
+
+#pragma mark -
+#pragma mark PRIVATE NSMutableArray Property
+#pragma mark -
+
+@property (strong, nonatomic) NSMutableArray *pageViewsMutableArray;
+
+#pragma mark -
+#pragma mark PRIVATE UIDynamicAnimator Property
+#pragma mark -
+
+@property (strong, nonatomic) UIDynamicAnimator *animator;
 
 #pragma mark -
 #pragma mark PRIVATE Helper Methods
@@ -70,22 +77,15 @@
 {
     [super viewDidLoad];
     
-//    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(self.scrollView.frame.origin.x,
-//                                                                     self.scrollView.frame.origin.y,
-//                                                                     self.scrollView.frame.size.width,
-//                                                                     self.scrollView.frame.size.height)];
-//    
-//    [[self scrollView] setDelegate:self];
-//    [[self scrollView] setPagingEnabled:YES];
-//    [[self scrollView] setBackgroundColor:[UIColor lightGrayColor]];
-//    [[self scrollView] setShowsVerticalScrollIndicator:NO];
-//    [[self scrollView] setShowsHorizontalScrollIndicator:NO];
+    [[self helloLabel] setAlpha:0.0f];
+    
+    // Set the BOOL to YES because we want to show the entire UIScrollView
+    [self setIsScrollViewFullyVisible:YES];
     
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:[self scrollView]];
     
     // Initialize the NSMutableArrays
     self.pageViewsMutableArray        = [[NSMutableArray alloc] initWithCapacity:MAX_NUMBER_OF_IMAGES];
-    self.visiblePageViewsMutableArray = [[NSMutableArray alloc] initWithCapacity:3];
     
     for(NSInteger i = 0; i < MAX_NUMBER_OF_IMAGES; ++i)
     {
@@ -95,12 +95,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    // Set up the content size of the scroll view
+    // Set the content size of the scroll view
     CGSize pagesScrollViewSize = self.scrollView.frame.size;
     
     [[self scrollView] setContentSize:CGSizeMake(pagesScrollViewSize.width * MAX_NUMBER_OF_IMAGES,
                                                  pagesScrollViewSize.height)];
     
+    [[self scrollView] setDirectionalLockEnabled:YES];
+    
+    // Instantiate and add a UISwipeGestureRecognizer for both up and down directions
     UISwipeGestureRecognizer *gestureRecognizer;
     
     gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
@@ -115,20 +118,17 @@
     
     [gestureRecognizer setDirection:(UISwipeGestureRecognizerDirectionDown)];
     
+    // Add the UISwipeGestureRecognizer to the UIScrollView
     [[self scrollView] addGestureRecognizer:gestureRecognizer];
     
     // Load the initial set of pages that are on screen
     [self loadVisiblePages];
     
-    for(int i = 0; i < 3; i++)
-    {
-        [[self visiblePageViewsMutableArray] addObject:[[self pageViewsMutableArray] objectAtIndex:i]];
-    }
-    
     // Adjust the alpha for all visible pages
 	[[self pageViewsMutableArray] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
         
 		[self setAlphaForPage:obj];
+//        [self setTransformForPage:obj];
         
 	}];
 }
@@ -144,28 +144,25 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if([self lastContentOffset] > scrollView.contentOffset.x)
-    {
-        // The user is scrolling right
-        
-    }
-    else if([self lastContentOffset] < scrollView.contentOffset.x)
-    {
-        // The user is scrolling left
-        
-    }
-    
-    self.lastContentOffset = scrollView.contentOffset.x;
-    
-    // Load the pages that are now on screen
+    // Load the pages that are on the screen
     [self loadVisiblePages];
     
     // Adjust the alpha for all visible pages
 	[[self pageViewsMutableArray] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
         
 		[self setAlphaForPage:obj];
+//        [self setTransformForPage:obj];
         
 	}];
+}
+
+#pragma mark -
+#pragma mark IBAction Methods
+#pragma mark -
+
+- (IBAction)returnedFromSegue:(UIStoryboardSegue *)segue
+{
+    NSLog(@"Returned from CustomMenuViewController");
 }
 
 #pragma mark -
@@ -211,12 +208,36 @@
 }
 
 #pragma mark -
+#pragma mark - Segue Navigation
+#pragma mark -
+
+- (UIStoryboardSegue *)segueForUnwindingToViewController:(UIViewController *)toViewController
+                                      fromViewController:(UIViewController *)fromViewController
+                                              identifier:(NSString *)identifier
+{
+    // Ensure that we are receiving the correct UIStoryboardSegue identifier
+    if([identifier isEqualToString:kUnwindCustomMenuViewControllerSegue])
+    {
+        CustomMenuUnwindSegue *segue = [[CustomMenuUnwindSegue alloc] initWithIdentifier:identifier
+                                                                                  source:fromViewController
+                                                                             destination:toViewController];
+        
+        return segue;
+    }
+    
+    // return the default unwind segue otherwise
+    return [super segueForUnwindingToViewController:toViewController
+                                 fromViewController:fromViewController
+                                         identifier:identifier];
+}
+
+#pragma mark -
 #pragma mark UI Helper Methods
 #pragma mark -
 
 - (void)loadVisiblePages
 {
-    // First, determine which page is currently visible
+    // Determine which page is currently visible
     CGFloat pageWidth = self.scrollView.frame.size.width;
     
     NSInteger page = (NSInteger)floor((self.scrollView.contentOffset.x * 2.0f + pageWidth) / (pageWidth * 2.0f));
@@ -231,6 +252,7 @@
         [self purgePage:i];
     }
     
+    // Load the visible pages
     for(NSInteger i = firstPage; i <= lastPage; i++)
     {
         [self loadPage:i];
@@ -256,17 +278,20 @@
     // Check if the current UIView exists
     if((NSNull *)pageView == [NSNull null])
     {
+        // Setup the frame to be used for the UIImageView
         CGRect frame = self.scrollView.bounds;
         
         frame.origin.x = frame.size.width * page;
         frame.origin.y = 0.0f;
         frame          = CGRectInset(frame, 10.0f, 0.0f);
         
+        // Instantiate and setup the UIImageView
         UIImageView *tempImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"smallCardBG.png"]];
         
         [tempImageView setContentMode:UIViewContentModeScaleAspectFit];
         [tempImageView setFrame:frame];
         
+        // Instantiate and setup the UILabel
         UILabel *tempLabel;
         
         if(page < 9)
@@ -294,22 +319,9 @@
         
         [tempLabel sizeToFit];
         
+        
+        // Add the UILabel to the UIImageView
         [tempImageView addSubview:tempLabel];
-        
-        CGFloat pageWidth = self.scrollView.frame.size.width;
-        
-        NSInteger page = (NSInteger)floor((self.scrollView.contentOffset.x * 2.0f + pageWidth) / (pageWidth * 2.0f));
-        
-        // Work out which pages you want to load
-        NSInteger firstPage = page - 1;
-        NSInteger lastPage  = page + 1;
-        
-        if(page)
-        {
-            
-        }
-        
-        tempImageView.transform = CGAffineTransformMakeScale(0.6, 0.6);
         
         // Add the UIImageView to the UIScrollView
         [[self scrollView] addSubview:tempImageView];
@@ -364,35 +376,109 @@
     }
 }
 
+- (void)setTransformForPage:(UIView *)page
+{
+    // Check if the current UIView exists
+    if((NSNull *)page != [NSNull null])
+    {
+        float position = page.center.x - self.scrollView.contentOffset.x;
+        float offset   = 2.0 - (fabs(self.scrollView.center.x - position) * 1.0) / self.scrollView.center.x;
+        
+        NSLog(@"OFFSET - %f", offset);
+        
+        page.transform = CGAffineTransformIdentity;
+        page.transform = CGAffineTransformScale(page.transform, offset, offset);
+    }
+}
+
 - (void)animateScrollViewForFullView:(BOOL)shouldDisplayFullView
 {
-    [[self animator] removeAllBehaviors];
+    // If the user swiped up we show the full UIScrollView
+    if(shouldDisplayFullView == YES)
+    {
+        // Ensure that the UIScrollView is not fully visible
+        if([self isScrollViewFullyVisible] == NO)
+        {
+            [UIView animateWithDuration:0.4f
+                                  delay:0.0f
+                 usingSpringWithDamping:0.6f
+                  initialSpringVelocity:0.9f
+                                options:UIViewAnimationOptionCurveEaseInOut
+                             animations:^{
+                             
+                                 self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x,
+                                                                    self.scrollView.frame.origin.y - 100,
+                                                                    self.scrollView.frame.size.width,
+                                                                    self.scrollView.frame.size.height);
+                                 
+                                 // Hide the UILabel
+                                 [[self helloLabel] setAlpha:0.0f];
+                             
+                             }
+                             completion:^(BOOL finished){
+                             
+                                 [self setIsScrollViewFullyVisible:YES];
+                             
+                             }];
+        }
+    }
+    // Else the user swiped down so we partially hide the UIScrollView
+    else
+    {
+        // Ensure that the UIScrollView is fully visible
+        if([self isScrollViewFullyVisible] == YES)
+        {
+            [UIView animateWithDuration:0.4f
+                                  delay:0.0f
+                 usingSpringWithDamping:0.6f
+                  initialSpringVelocity:0.9f
+                                options:UIViewAnimationOptionCurveEaseInOut
+                             animations:^{
+                                 
+                                 self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x,
+                                                                    self.scrollView.frame.origin.y + 100,
+                                                                    self.scrollView.frame.size.width,
+                                                                    self.scrollView.frame.size.height);
+                                 
+                                 // Show the UILabel
+                                 [[self helloLabel] setAlpha:1.0f];
+                                 
+                             }
+                             completion:^(BOOL finished){
+                                 
+                                 [self setIsScrollViewFullyVisible:NO];
+                                 
+                             }];
+        }
+    }
     
-    CGFloat boundaryPointY    = (shouldDisplayFullView) ? -10.0 : self.scrollViewContainer.frame.size.height;
-    CGFloat gravityDirectionY = (shouldDisplayFullView) ? -0.1 : 0.1;
-    
-    // Create and add the UIGravityBehaviour to the UIDynamicAnimator object
-    UIGravityBehavior *gravityBehavior = [[UIGravityBehavior alloc] initWithItems:@[[self scrollView]]];
-    
-    [gravityBehavior setGravityDirection:CGVectorMake(0.0, gravityDirectionY)];
-    
-    [[self animator] addBehavior:gravityBehavior];
-    
-    // Create and add the UICollisionBehavior to the UIDynamicAnimator object
-    UICollisionBehavior *collisionBehavior = [[UICollisionBehavior alloc] initWithItems:@[[self scrollView]]];
-    
-    [collisionBehavior addBoundaryWithIdentifier:@"scrollViewBoundary"
-                                       fromPoint:CGPointMake(0.0, boundaryPointY)
-                                         toPoint:CGPointMake(self.scrollViewContainer.frame.origin.x, boundaryPointY)];
-    
-    [self.animator addBehavior:collisionBehavior];
-    
-    // Create and add the UIDynamicItemBehavior to the UIDynamicAnimator object
-    UIDynamicItemBehavior *menuViewBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[[self scrollView]]];
-    
-    [menuViewBehavior setElasticity:0.2];
-    
-    [self.animator addBehavior:menuViewBehavior];
+//    [[self animator] removeAllBehaviors];
+//    
+//    CGFloat boundaryPointY    = (shouldDisplayFullView) ? -10.0 : self.scrollViewContainer.frame.size.height;
+//    CGFloat gravityDirectionY = (shouldDisplayFullView) ? -0.1 : 0.1;
+//    
+//    // Create and add the UIGravityBehaviour to the UIDynamicAnimator object
+//    UIGravityBehavior *gravityBehavior = [[UIGravityBehavior alloc] initWithItems:@[[self scrollView]]];
+//    
+//    [gravityBehavior setGravityDirection:CGVectorMake(0.0, gravityDirectionY)];
+//    
+//    [[self animator] addBehavior:gravityBehavior];
+//
+//    // Create and add the UICollisionBehavior to the UIDynamicAnimator object
+//    UICollisionBehavior *collisionBehavior = [[UICollisionBehavior alloc] initWithItems:@[[self scrollView]]];
+//    
+//    [collisionBehavior addBoundaryWithIdentifier:@"scrollViewBoundary"
+//                                       fromPoint:CGPointMake(0.0, boundaryPointY)
+//                                         toPoint:CGPointMake(self.scrollViewContainer.frame.origin.x, boundaryPointY)];
+//    
+//    [self.animator addBehavior:collisionBehavior];
+//    
+//    // Create and add the UIDynamicItemBehavior to the UIDynamicAnimator object
+//    UIDynamicItemBehavior *menuViewBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[[self scrollView]]];
+//    
+//    [menuViewBehavior setElasticity:0.2];
+//    
+//    [self.animator addBehavior:menuViewBehavior];
 }
 
 @end
